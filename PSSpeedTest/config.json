@@ -6,5 +6,9 @@
     "defaultInternetServer": {
         "defaultServer": "",
         "defaultPort": ""
+    },
+    "parallelSettings": {
+        "runAsParallel": false,
+        "parallelThreads": 4
     }
 }

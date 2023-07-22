@@ -1,10 +1,10 @@
 function Get-SpeedTestConfig {
     <#
         .SYNOPSIS
-        Get the default server configurations for Internet and Local speed test servers.
+        Get the default server configurations for Internet and Local speed test servers, and parallel settings.
 
         .DESCRIPTION
-        Get the default server configurations for Internet and Local speed test servers.
+        Get the default server configurations for Internet and Local speed test servers, and parallel settings.
 
         .EXAMPLE
         Get-SpeedTestConfig
@@ -22,6 +22,8 @@ function Get-SpeedTestConfig {
             DefaultInternetPort   = $config.defaultInternetServer.defaultPort;
             DefaultLocalServer    = $config.defaultLocalServer.defaultServer;
             DefaultLocalPort      = $config.defaultLocalServer.defaultPort;
+            Parallel              = $config.parallelSettings.runAsParallel;
+            ParallelThreads       = $config.parallelSettings.parallelThreads;
         }
 
         return $config

@@ -4,7 +4,7 @@ function Set-SpeedTestConfig {
         Set the default server configurations for Internet and Local speed test servers.
 
         .DESCRIPTION
-        Set the default server configurations for Internet and Local speed test servers.
+        Set the default server configurations for Internet and Local speed test servers, enable iperf to run in parallel if desired, and set the number of threads if running in parallel.
         Convert parameter values to appropriate PSCustomObject and write to the JSON configuration file.
 
         .PARAMETER InternetServer
@@ -18,6 +18,12 @@ function Set-SpeedTestConfig {
 
         .PARAMETER LocalPort
         The port that will be utilized when running "Invoke-SpeedTest -Local".
+
+        .PARAMETER Parallel
+        Determines if iPerf3 is run in parallel (-P) when running "Invoke-SpeedTest".
+
+        .PARAMETER ParallelThreads
+        The number of threads used when the "Parallel" switch is enabled. The default is 4.
 
         .EXAMPLE
         Set-SpeedTestConfig -InternetServer "test.public.com" -InternetPort "5201"
@@ -46,6 +52,11 @@ function Set-SpeedTestConfig {
         Set-SpeedTestConfig -Local "5201"
         Sets the default Local speed test port to "5201".
         Requires a previously-saved Local speed test server.
+
+        .EXAMPLE
+        Set-SpeedTestConfig -Parallel $True -ParallelThreads 8
+        Enables the parallel flag for iPerf3, and sets the threads to 8.
+        Setting the number of threads requires "Parallel" to be set to True.
     #>
 
     [CmdletBinding()]
@@ -61,7 +72,13 @@ function Set-SpeedTestConfig {
         $LocalServer,
         [ValidateNotNullOrEmpty()]
         [String]
-        $LocalPort
+        $LocalPort,
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Parallel,
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $ParallelThreads
     )
 
     try {
@@ -80,6 +97,10 @@ function Set-SpeedTestConfig {
     "defaultInternetServer" : {
         "defaultServer" : "",
         "defaultPort"   : ""
+    },
+    "parallelSettings": {
+        "runAsParallel": false,
+        "parallelThreads": 4
     }
 }
 '@
@@ -99,6 +120,8 @@ function Set-SpeedTestConfig {
     if ($InternetPort) {$config.defaultInternetServer.defaultPort = $InternetPort}
     if ($LocalServer) {$config.defaultLocalServer.defaultServer = $LocalServer}
     if ($LocalPort) {$config.defaultLocalServer.defaultPort = $LocalPort}
+    if ($Parallel) {$config.parallelSettings.runAsParallel = $Parallel}
+    if ($ParallelThreads) {$config.parallelSettings.parallelThreads = $ParallelThreads}
 
     Write-Verbose -Message 'Setting config.json.'
     $config |
