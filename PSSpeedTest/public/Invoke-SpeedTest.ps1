@@ -131,6 +131,10 @@ function Invoke-SpeedTest {
 
     $command = $command + "-f m -J"
 
+    if ($config.parallel) {
+        $command = $command + " -P " + $config.parallelThreads
+    }
+
     Write-Verbose -Message "Executing command: $command"
 
     $resultsJSON = Invoke-Expression -Command $command
